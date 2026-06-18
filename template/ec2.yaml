@@ -79,6 +79,8 @@ Resources:
 
           <p><b>Código:</b> 0192372</p>
 
+          <h1>Modificado por la colaboradora: Sarah Julio</h1>
+
           <button onclick="mensaje()">
           Saludar
           </button>
