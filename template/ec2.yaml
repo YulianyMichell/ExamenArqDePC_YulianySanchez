@@ -1,0 +1,109 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Examen Final Arquitectura de Computadores
+
+Resources:
+
+  SecurityGroupEC2:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Permitir HTTP
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  InstanciaEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0c02fb55956c7d316
+      InstanceType: t2.micro
+      SecurityGroups:
+        - !Ref SecurityGroupEC2
+
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+
+          systemctl start httpd
+          systemctl enable httpd
+
+          cat <<EOF > /var/www/html/index.html
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Examen Final</title>
+
+              <style>
+                  body{
+                      background:#f5f5f5;
+                      text-align:center;
+                      font-family:Arial;
+                      margin-top:100px;
+                  }
+
+                  .card{
+                      background:white;
+                      width:600px;
+                      margin:auto;
+                      padding:30px;
+                      border-radius:15px;
+                      box-shadow:0px 0px 15px gray;
+                  }
+
+                  h1{
+                      color:#0d6efd;
+                  }
+
+                  p{
+                      font-size:22px;
+                  }
+
+                  button{
+                      padding:10px;
+                      font-size:18px;
+                  }
+              </style>
+
+          </head>
+
+          <body>
+
+          <div class="card">
+
+          <h1>Examen Final Arquitectura de Computadores</h1>
+
+          <p><b>Nombre:</b> Yuliany Michell Sánchez Becerra</p>
+
+          <p><b>Código:</b> 0192372</p>
+
+          <button onclick="mensaje()">
+          Saludar
+          </button>
+
+          <h2 id="texto"></h2>
+
+          </div>
+
+          <script>
+
+          function mensaje(){
+
+          document.getElementById("texto").innerHTML=
+          "Bienvenido a mi examen final.";
+
+          }
+
+          </script>
+
+          </body>
+          </html>
+          EOF
+
+Outputs:
+
+  PublicIP:
+    Description: IP Pública de la EC2
+    Value: !GetAtt InstanciaEC2.PublicIp
